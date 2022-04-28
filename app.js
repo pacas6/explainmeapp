@@ -18,7 +18,7 @@ app.use(express.static(path.join(__dirname, 'public'))); // usa para poder acess
 
 app.use('/', indexRouter);
 app.use('/api/fundos', fundosRouter);
-app.use('https://explainmeapp.herokuapp.com',usersRouter)
+app.use('explainmeapp.herokuapp.com',usersRouter)
 
 
 
