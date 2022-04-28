@@ -1,0 +1,218 @@
+create table pais (
+	
+	pais_id serial unique not null,
+	pais varchar(60) unique not null,
+	primary key(pais_id)
+)
+
+create table morada (
+	
+	morada_id serial not null,
+	endereço varchar(120) not null,
+	cidade varchar(120) not null,
+	codigo_postal varchar(30) not null,
+	fk_pais_id int not null,
+	primary key(morada_id),
+	foreign key(fk_pais_id)references pais(pais_id)
+)
+
+select * from morada
+
+create table utilizador(
+
+	user_id serial unique not null,
+	nome varchar (70) not null,
+	apelido varchar (70) not null,
+	genero char(1) not null,
+	birthday date  not null,
+	email varchar(70) unique not null,
+	telefone varchar(50) unique not null,
+	password varchar(180) unique not null,
+	fk_morada_id int not null,
+	primary key (user_id),
+	foreign key(fk_morada_id) references morada(morada_id)
+)
+
+select * from utilizador
+
+create table aluno(
+
+	aluno_id serial unique not null,
+	type int not null,
+	fk_utilizador_id int not null,
+	foreign key(fk_utilizador_id) references utilizador(user_id) 
+
+)
+
+create table rank(
+
+	rank_id serial unique not null,
+	estatuto varchar (40) not null
+	
+)
+
+create table explicador(
+
+	explicador_id serial unique not null,
+	fk_utilizador_id int not null,
+	fk_rank_id int not null,
+	type int,
+	foreign key(fk_utilizador_id) references utilizador(user_id),
+	foreign key(fk_rank_id) references rank(rank_id)
+	
+)
+
+create table anuncio(
+
+	anuncio_id serial unique not null,
+	titulo varchar (150) not null,
+	descricao_aula varchar (400),
+	descricao_explicador varchar(400),
+	fk_explicador_id int not null,
+	fk_rank_id int not null,
+	foreign key(fk_explicador_id) references explicador(explicador_id),
+	foreign key(fk_rank_id) references rank (rank_id)
+
+)
+
+select * from anuncio
+
+create table fundo(
+	
+	fundo_id serial unique not null,
+	total_ganho int,
+	total_por_receber int,
+	withdrawable int,
+	fk_explicador_id int not null,
+	foreign key(fk_explicador_id) references explicador (explicador_id)
+
+)
+
+create table explicador_aluno(
+
+	explicador_aluno_id serial unique not null,
+	fk_explicador_id int not null,
+	fk_aluno_id int not null,
+	foreign key(fk_explicador_id) references explicador(explicador_id),
+	foreign key (fk_aluno_id) references aluno(aluno_id)
+)
+
+select * from explicador_aluno
+
+create table disciplina(
+
+	disciplina_id serial unique not null,
+	nome varchar(40) not null
+)
+
+create table aluno_disciplina(
+
+	aluno_disciplina_id serial unique not null,
+	fk_aluno_id int not null,
+	fk_discplina_id int not null,
+	foreign key(fk_aluno_id) references aluno (aluno_id),
+	foreign key(fk_discplina_id) references disciplina (disciplina_id)
+)
+
+create table explicacao(
+
+	explicacao_id serial unique not null,
+	sumario_titulo varchar(60) not null
+	
+)
+
+create table explicacao_aluno(
+
+	explicacao_aluno_id serial unique not null,
+	fk_aluno_id int unique not null,
+	fk_explicacao_id int unique not null,
+	foreign key(fk_aluno_id) references aluno(aluno_id),
+	foreign key(fk_explicacao_id) references explicacao(explicacao_id)
+)
+
+----correção na tabela explicacao_aluno
+alter table explicacao_aluno drop column fk_aluno_id int not null
+alter table explicacao_aluno drop column fk_explicacao_id int not null
+
+alter table explicacao_aluno add column fk_aluno_id int not null
+alter table explicacao_aluno add column fk_explicacao_id int not null
+
+alter table explicacao_aluno add foreign key(fk_aluno_id) references aluno(aluno_id)
+alter table explicacao_aluno add foreign key(fk_explicacao_id) references explicacao(explicacao_id)
+
+create table pedido(
+
+	pedido_id serial unique not null,
+	data date not null,
+	status bit default null,
+	hora time not null,
+	modalidade varchar(50) not null,
+	fk_disciplina_id int unique not null,
+	fk_explicador_id int unique not null,
+	foreign key(fk_disciplina_id) references disciplina(disciplina_id),
+	foreign key (fk_explicador_id) references explicador(explicador_id)
+	
+)
+
+-- correçoes nas tabelas explicação e pedido 
+alter table pedido add column fk_disciplina_id int not null
+alter table pedido add column fk_explicador_id int not null
+alter table pedido add foreign key(fk_disciplina_id) references disciplina(disciplina_id)
+alter table pedido add foreign key(fk_explicador_id) references explicador(explicador_id)
+select * from pedido
+
+alter table explicacao add column fk_pedido_id int not null
+alter table explicacao add foreign key(fk_pedido_id) references pedido(pedido_id)
+
+select * from explicacao
+
+create table pagamento(
+
+	pagamento_id serial unique not null,
+	valor decimal(10,3) default 0,
+	taxa decimal (10,3) default 0,
+	data date not null,
+	fk_explicador_id int not null,
+	fk_explicacao_id int not null,
+	foreign key(fk_explicador_id) references explicador(explicador_id),
+	foreign key(fk_explicacao_id) references explicacao(explicacao_id)
+	
+)
+
+create table review(
+
+	review_id serial unique not null,
+	review varchar(150),
+	fk_aluno_id int not null,
+	fk_anuncio_id int not null,
+	foreign key(fk_aluno_id) references aluno(aluno_id),
+	foreign key(fk_anuncio_id) references anuncio(anuncio_id)
+)
+
+create table explicador_disciplina(
+
+	explicador_disciplina_id serial unique not null,
+	fk_explicador_id int not null,
+	fk_anuncio_id int not null,
+	foreign key (fk_explicador_id) references explicador(explicador_id),
+	foreign key (fk_anuncio_id) references anuncio(anuncio_id)
+)
+
+create table metodo_de_pagamento(
+
+	metodo_id serial unique not null,
+	modalidade varchar(50) not null,
+	email varchar(100) not null,
+	telefone varchar(40) not null,
+	primary key(metodo_id)
+)
+
+create table utilizador_metodo(
+
+	utilizador_metodo_id serial unique not null,
+	fk_metodo_id int not null,
+	fk_utilizador_id int not null,
+	foreign key(fk_metodo_id) references metodo_de_pagamento(metodo_id),
+	foreign key(fk_utilizador_id) references utilizador(user_id)
+	
+)
