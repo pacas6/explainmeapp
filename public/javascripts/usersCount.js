@@ -8,7 +8,7 @@ async function showUsersCount(){
     try {
         
         let values = await $.ajax({
-            url: `/api/users/`,
+            url: `explainmeapp.herokuapp.com/`,
             method: 'GET',
             datatype: 'json',
         });

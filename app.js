@@ -20,6 +20,4 @@ app.use('/', indexRouter);
 app.use('/api/fundos', fundosRouter);
 app.use('explainmeapp.herokuapp.com',usersRouter)
 
-
-
 module.exports = app;
