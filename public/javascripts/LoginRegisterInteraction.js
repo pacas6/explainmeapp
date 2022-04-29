@@ -5,12 +5,15 @@ function showLoginCard(){
     
 }
 
+/*
+
 function showRegisterCard(){
 
     document.getElementById('BackGroundCard').style.visibility = 'visible'
     document.getElementById('RegisterCard').style.visibility = 'visible'
 
 }
+*/
 
 function hideCardAndBackGround(){
 
